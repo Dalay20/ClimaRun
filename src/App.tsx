@@ -3,8 +3,12 @@ import { Grid } from '@mui/material';
 import HeaderUI from './components/HeaderUI';
 import AlertUI from './components/AlertUI';
 import SelectorUI from './components/SelectorUI'; 
+import IndicatorUI from './components/IndicatorUI';
+import DataFetcher from './functions/DataFetcher';
 
 function App() {
+
+  const dataFetcherOutput = DataFetcher();
 
   return (
     <Grid container spacing={5} justifyContent="center" alignItems="center">
@@ -16,7 +20,51 @@ function App() {
          <Grid size={{ xs: 12, md: 3  }}><SelectorUI/></Grid>
 
          {/* Indicadores */}
-         <Grid size={{ xs: 12, md: 9 }}>Elemento: Indicadores</Grid>
+          <Grid container size={{ xs: 12, md: 9 }} >
+
+                 {/* Renderizado condicional de los datos obtenidos */}
+
+                 {dataFetcherOutput.loading && <p>Cargando datos...</p>}
+                 {dataFetcherOutput.error && <p>Error: {dataFetcherOutput.error}</p>}
+                 {dataFetcherOutput.data && (
+                 <>
+
+                     {/* Indicadores con datos obtenidos */}
+
+                     <Grid size={{ xs: 12, md: 3 }} >
+                         <IndicatorUI
+                             title=' 🌡️Temperatura actual'
+                             description={dataFetcherOutput.data.current.temperature_2m + " " + dataFetcherOutput.data.current_units.temperature_2m} />
+                     </Grid>
+
+                     <Grid size={{ xs: 12, md: 3 }}>
+                         <IndicatorUI
+                             title='🌡️ Sensación térmica'
+                             description={dataFetcherOutput.data.hourly.apparent_temperature[0] + " " + dataFetcherOutput.data.hourly_units.apparent_temperature} />
+                     </Grid>
+
+                     <Grid size={{ xs: 12, md: 3 }}>
+                         <IndicatorUI
+                             title=' 💨Velocidad del viento'
+                             description={dataFetcherOutput.data.current.wind_speed_10m + " " + dataFetcherOutput.data.current_units.wind_speed_10m} />
+                     </Grid>
+
+                     <Grid size={{ xs: 12, md: 3 }}>
+                         <IndicatorUI
+                             title='💧 Humedad relativa'
+                             description={dataFetcherOutput.data.current.relative_humidity_2m + " " + dataFetcherOutput.data.current_units.relative_humidity_2m} />
+                     </Grid>
+
+                     <Grid size={{ xs: 12, md: 3 }}>
+                         <IndicatorUI
+                             title='🌫️ Nubosidad'
+                             description={dataFetcherOutput.data.current.cloud_cover + " " + dataFetcherOutput.data.current_units.cloud_cover} />
+                     </Grid>
+
+                 </>
+                 )}
+
+             </Grid>
 
          {/* Gráfico */}
          <Grid sx={{ display: { xs: "none", md: "block"} }}>Elemento: Gráfico</Grid>
