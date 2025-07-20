@@ -67,3 +67,41 @@ export default tseslint.config([
   },
 ])
 ```
+# 🏃‍♂️ ClimaRun – Dashboard Climático para Runners
+
+## 🌤️ Descripción
+
+**ClimaRun** es un dashboard web interactivo diseñado especialmente para corredores. Utiliza la API de **Open Meteo** para mostrar métricas climáticas clave en tiempo real, ayudando a planificar entrenamientos de forma segura y eficiente. Presenta datos como temperatura, humedad, índice UV, velocidad del viento, nubosidad y probabilidad de lluvia, junto con alertas personalizadas y recomendaciones útiles.
+
+---
+
+## 🎯 Objetivo del Proyecto
+
+Desarrollar una herramienta web visual e intuitiva que permita a los usuarios que practican running:
+
+- Conocer las condiciones climáticas actuales de su ciudad o ubicación.
+- Visualizar gráficamente cómo evolucionará el clima por hora.
+- Recibir alertas sobre riesgos como radiación solar extrema, bochorno o lluvias.
+- Determinar automáticamente la mejor franja horaria del día para correr.
+- Ver pronósticos extendidos y tomar decisiones informadas para sus rutinas.
+
+---
+
+## 🚀 Tecnologías Utilizadas
+
+- ⚛️ React (Vite)
+- 🖌️ Tailwind CSS
+- 📊 Recharts (gráficos)
+- 🌐 Open Meteo API
+- ⏱️ Axios / Fetch para peticiones asincrónicas
+- 🧠 JavaScript moderno (ES6+)
+
+---
+
+## 🛠️ Instalación y uso
+
+1. **Clona este repositorio:**
+
+```bash
+git clone https://github.com/tu-usuario/dashboard-climarun.git
+cd dashboard-climarun
