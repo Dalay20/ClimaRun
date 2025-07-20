@@ -105,3 +105,4 @@ Desarrollar una herramienta web visual e intuitiva que permita a los usuarios qu
 ```bash
 git clone https://github.com/tu-usuario/dashboard-climarun.git
 cd dashboard-climarun
+
