@@ -7,10 +7,18 @@ import IndicatorUI from './components/IndicatorUI';
 import DataFetcher from './functions/DataFetcher';
 import TableUI from './components/TableUI';
 import ChartUI from './components/ChartUI';
+import { useState } from 'react'
+
 
 function App() {
 
-  const dataFetcherOutput = DataFetcher();
+const [selectedCity, setSelectedCity] = useState('guayaquil'); // Valor inicial opcional
+
+  const handleCityChange = (city: string) => {
+    setSelectedCity(city);
+  };
+
+  const dataFetcherOutput = DataFetcher(selectedCity);
 
   return (
     <Grid container spacing={5} justifyContent="center" alignItems="center">
@@ -19,7 +27,9 @@ function App() {
           <Grid size={{ xs: 12, md: 12 }}><HeaderUI/></Grid>
 
          {/* Selector */}
-         <Grid size={{ xs: 12, md: 3  }}><SelectorUI/></Grid>
+            <Grid size={{ xs: 12, md: 3 }}>
+            <SelectorUI onCityChange={handleCityChange} />
+            </Grid>
 
          {/* Indicadores */}
           <Grid container size={{ xs: 12, md: 9 }} >
@@ -27,8 +37,7 @@ function App() {
                  {/* Renderizado condicional de los datos obtenidos */}
 
                  {dataFetcherOutput.loading && <p>Cargando datos...</p>}
-                 {dataFetcherOutput.error && <p>Error: {dataFetcherOutput.error}</p>}
-                 {dataFetcherOutput.data && (
+                  {!dataFetcherOutput.loading && !dataFetcherOutput.error && dataFetcherOutput.data && (
                  <>
 
                      {/* Indicadores con datos obtenidos */}
@@ -66,19 +75,24 @@ function App() {
                  </>
                  )}
 
+                 {dataFetcherOutput.error &&
+                    <p>Error: {dataFetcherOutput.error}</p>
+                 }
+
              </Grid>
 
          {/* Gráfico */}
-         <Grid sx={{ display: { xs: "none", md: "block"} }}><ChartUI /></Grid>
-
+         <Grid size={{ xs: 12, md: 12 }} sx={{ display: { xs: 'none', md: 'block' } }}>
+            <ChartUI city={selectedCity} />
+        </Grid>
          {/* Tabla */}
-         <Grid sx={{ display: { xs: "none", md: "block" } }}> <TableUI /></Grid>
+         <Grid size={{ xs: 12, md: 9 }} sx={{ display: { xs: 'none', md: 'block' } }}><TableUI city={selectedCity} /></Grid>
 
          {/* Alertas */}
-         <Grid container justifyContent="right" alignItems="center"><AlertUI description="No se preveen lluvias"/></Grid>
+         <Grid container justifyContent="right" alignItems="center"><AlertUI description="texto"/> </Grid>
 
          {/* Información adicional */}
-         <Grid>Elemento: Información adicional</Grid>
+         <Grid size={{ xs: 12, md: 3 }}>Elemento: Información adicional</Grid>
 
       </Grid>
   )

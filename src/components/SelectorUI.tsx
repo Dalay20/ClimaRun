@@ -4,12 +4,17 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { type SelectChangeEvent } from '@mui/material/Select';
 import { useState } from 'react';
 
-export default function SelectorUI() {
+interface SelectorUIProps {
+    onCityChange: (city: string) => void;
+}
+
+export default function SelectorUI({ onCityChange }: SelectorUIProps) {
 
     const [cityInput, setCityInput] = useState('');
 
     const handleChange = (event: SelectChangeEvent<string>) => {
         setCityInput(event.target.value)
+        onCityChange(event.target.value); // Notifica al padre
     };
 
 return (
@@ -21,7 +26,7 @@ return (
          label="Ciudad"
          onChange={handleChange} 
          value={cityInput}>
-         <MenuItem disabled><em>Seleccione una ciudad</em></MenuItem>
+         <MenuItem disabled value=""><em>Seleccione una ciudad</em></MenuItem>
          <MenuItem value={"guayaquil"}>Guayaquil</MenuItem>
          <MenuItem value={"quito"}>Quito</MenuItem>
          <MenuItem value={"manta"}>Manta</MenuItem>
