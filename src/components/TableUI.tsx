@@ -26,7 +26,7 @@ function getRows(data: OpenMeteoResponse) {
     // Índice Runner simple (ajústalo según tus criterios)
     const runnerScore = Math.round(
       100 -
-        (Math.abs(tempMax - 20) * 2 + uvMax * 3 + lluvia * 5 + nubes * 0.5)
+      (Math.abs(tempMax - 20) * 2 + uvMax * 3 + lluvia * 5 + nubes * 0.5)
     );
 
     return {
@@ -60,8 +60,8 @@ const columns: GridColDef[] = [
         value >= 70
           ? 'green'
           : value >= 40
-          ? 'orange'
-          : 'red';
+            ? 'orange'
+            : 'red';
       return (
         <span style={{ color, fontWeight: 'bold' }}>{value}</span>
       );
@@ -71,35 +71,71 @@ const columns: GridColDef[] = [
 
 
 export default function TableUI({ city }: { city: string }) {
-    const { data, loading, error } = DataFetcher(city);
+  const { data, loading, error } = DataFetcher(city);
 
-    const rows = getRows(data as OpenMeteoResponse);
-    const dataError = !loading && !error && rows.length === 0;
+  const rows = getRows(data as OpenMeteoResponse);
+  const dataError = !loading && !error && rows.length === 0;
 
-    return (
-        <Box sx={{ height: 400, width: '100%' }}>
-            {loading && <CircularProgress />}
-            {error && <Alert severity="error">{error}</Alert>}
-            {dataError && (
-                <Alert severity="error">
-                    Error al procesar los datos de la API. Intente nuevamente más tarde.
-                </Alert>
-            )}
-            {!loading && !error && !dataError && (
-                <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 10,
-                            },
-                        },
-                    }}
-                    pageSizeOptions={[10]}
-                    disableRowSelectionOnClick
-                />
-            )}
-        </Box>
-    );
+  return (
+    <Box sx={{ height: 400, width: '100%' }}>
+      {loading && <CircularProgress />}
+      {error && <Alert severity="error">{error}</Alert>}
+      {dataError && (
+        <Alert severity="error">
+          Error al procesar los datos de la API. Intente nuevamente más tarde.
+        </Alert>
+      )}
+      {!loading && !error && !dataError && (
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          sx={{
+            border: 'none',
+            fontFamily: 'Inter, Roboto, sans-serif',
+            color: '#000', // texto global
+
+            backgroundColor: '#ffffff',
+            borderRadius: 2,
+
+            '.MuiDataGrid-columnHeaders': {
+              backgroundColor: '#e3e9f3',
+              color: '#000', // encabezados en negro
+              fontWeight: 'bold',
+              fontSize: '0.95rem',
+              borderBottom: '1px solid #ccc',
+            },
+
+            '.MuiDataGrid-cell': {
+              color: '#000', // celdas en negro
+              borderBottom: '1px solid #f0f0f0',
+            },
+
+            '.MuiDataGrid-row:hover': {
+              backgroundColor: '#f9fbff',
+            },
+
+            '.MuiDataGrid-footerContainer': {
+              backgroundColor: '#f4f6f8',
+              borderTop: '1px solid #ddd',
+              color: '#000', // pie de tabla en negro
+            },
+
+            '.MuiTablePagination-root': {
+              color: '#000', // números de paginación
+            },
+          }}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 10,
+              },
+            },
+          }}
+          pageSizeOptions={[10]}
+          disableRowSelectionOnClick
+        />
+
+      )}
+    </Box>
+  );
 }

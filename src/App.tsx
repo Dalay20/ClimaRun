@@ -66,6 +66,9 @@ const [selectedCity, setSelectedCity] = useState('guayaquil'); // Valor inicial 
                              description={dataFetcherOutput.data.current.relative_humidity_2m + " " + dataFetcherOutput.data.current_units.relative_humidity_2m} />
                      </Grid>
 
+
+                    
+                    
                      <Grid size={{ xs: 12, md: 3 }}>
                          <IndicatorUI
                              title='🌫️ Nubosidad'
@@ -89,10 +92,8 @@ const [selectedCity, setSelectedCity] = useState('guayaquil'); // Valor inicial 
          <Grid size={{ xs: 12, md: 9 }} sx={{ display: { xs: 'none', md: 'block' } }}><TableUI city={selectedCity} /></Grid>
 
          {/* Alertas */}
-         <Grid container justifyContent="right" alignItems="center"><AlertUI description="texto"/> </Grid>
+         <Grid container justifyContent="right" alignItems="center"><AlertUI description="Tabla"/> </Grid>
 
-         {/* Información adicional */}
-         <Grid size={{ xs: 12, md: 3 }}>Elemento: Información adicional</Grid>
 
       </Grid>
   )

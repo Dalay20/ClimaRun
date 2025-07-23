@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/ClimaRun/dev-sw.js?dev-sw', { scope: '/ClimaRun/', type: 'classic' })
