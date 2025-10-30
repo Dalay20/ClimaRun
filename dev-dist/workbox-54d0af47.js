@@ -791,7 +791,7 @@ define(['exports'], (function (exports) { 'use strict';
             event.waitUntil(requestPromises);
             // If a MessageChannel was used, reply to the message on success.
             if (event.ports && event.ports[0]) {
-              void requestPromises.then(() => event.ports[0].postMessage(true));
+              requestPromises.then(() => event.ports[0].postMessage(true));
             }
           }
         });
@@ -1908,7 +1908,7 @@ define(['exports'], (function (exports) { 'use strict';
       async fetchAndCachePut(input) {
         const response = await this.fetch(input);
         const responseClone = response.clone();
-        void this.waitUntil(this.cachePut(input, responseClone));
+        this.waitUntil(this.cachePut(input, responseClone));
         return response;
       }
       /**
