@@ -2767,32 +2767,36 @@ define(['exports'], (function (exports) { 'use strict';
           } else if (entry && entry.revision === undefined) {
             urlsToWarnAbout.push(entry.url);
           }
-          const {
-            cacheKey,
-            url
-          } = createCacheKey(entry);
+
+          const {cacheKey, url} = createCacheKey(entry);
           const cacheMode = typeof entry !== 'string' && entry.revision ? 'reload' : 'default';
-          if (this._urlsToCacheKeys.has(url) && this._urlsToCacheKeys.get(url) !== cacheKey) {
+
+          const existingCacheKey = this._urlsToCacheKeys.get(url);
+          if (existingCacheKey && existingCacheKey !== cacheKey) {
             throw new WorkboxError('add-to-cache-list-conflicting-entries', {
-              firstEntry: this._urlsToCacheKeys.get(url),
-              secondEntry: cacheKey
+              firstEntry: existingCacheKey,
+              secondEntry: cacheKey,
             });
           }
+
           if (typeof entry !== 'string' && entry.integrity) {
-            if (this._cacheKeysToIntegrities.has(cacheKey) && this._cacheKeysToIntegrities.get(cacheKey) !== entry.integrity) {
+            const existingIntegrity = this._cacheKeysToIntegrities.get(cacheKey);
+            if (existingIntegrity && existingIntegrity !== entry.integrity) {
               throw new WorkboxError('add-to-cache-list-conflicting-integrities', {
-                url
+                url,
               });
             }
             this._cacheKeysToIntegrities.set(cacheKey, entry.integrity);
           }
+
           this._urlsToCacheKeys.set(url, cacheKey);
           this._urlsToCacheModes.set(url, cacheMode);
-          if (urlsToWarnAbout.length > 0) {
-            const warningMessage = `Workbox is precaching URLs without revision ` + `info: ${urlsToWarnAbout.join(', ')}\nThis is generally NOT safe. ` + `Learn more at https://bit.ly/wb-precache`;
-            {
-              logger.warn(warningMessage);
-            }
+        }
+
+        if (urlsToWarnAbout.length > 0) {
+          const warningMessage = `Workbox is precaching URLs without revision ` + `info: ${urlsToWarnAbout.join(', ')}\nThis is generally NOT safe. ` + `Learn more at https://bit.ly/wb-precache`;
+          {
+            logger.warn(warningMessage);
           }
         }
       }
