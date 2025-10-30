@@ -2365,8 +2365,7 @@ define(['exports'], (function (exports) { 'use strict';
           request,
         });
 
-        let response;
-        let caughtError = null;
+  let response;
 
         try {
           response = await this._handle(request, handler);
@@ -2379,7 +2378,6 @@ define(['exports'], (function (exports) { 'use strict';
             });
           }
         } catch (err) {
-          caughtError = err;
           if (err instanceof Error) {
             for (const callback of handler.iterateCallbacks('handlerDidError')) {
               const maybeResponse = await callback({
