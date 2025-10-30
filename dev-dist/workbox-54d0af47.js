@@ -2182,34 +2182,45 @@ define(['exports'], (function (exports) { 'use strict';
       async _ensureResponseSafeToCache(response) {
         let responseToCache = response;
         let pluginsUsed = false;
+
+        // Give plugins the opportunity to override / validate the response.
         for (const callback of this.iterateCallbacks('cacheWillUpdate')) {
           responseToCache = (await callback({
             request: this.request,
             response: responseToCache,
-            event: this.event
+            event: this.event,
           })) || undefined;
           pluginsUsed = true;
+
           if (!responseToCache) {
             break;
           }
         }
-        if (!pluginsUsed) {
-          if (responseToCache && responseToCache.status !== 200) {
-            responseToCache = undefined;
-          }
-          {
-            if (responseToCache) {
-              if (responseToCache.status !== 200) {
-                if (responseToCache.status === 0) {
-                  logger.warn(`The response for '${this.request.url}' ` + `is an opaque response. The caching strategy that you're ` + `using will not cache opaque responses by default.`);
-                } else {
-                  logger.debug(`The response for '${this.request.url}' ` + `returned a status code of '${response.status}' and won't ` + `be cached as a result.`);
-                }
-              }
-            }
-          }
+
+        if (pluginsUsed) {
+          return responseToCache;
         }
-        return responseToCache;
+
+        if (!responseToCache) {
+          return undefined;
+        }
+
+        if (responseToCache.status === 200) {
+          return responseToCache;
+        }
+
+        if (responseToCache.status === 0) {
+          logger.warn(
+            `The response for '${this.request.url}' is an opaque response. The caching strategy that you're ` +
+              `using will not cache opaque responses by default.`,
+          );
+        } else {
+          logger.debug(
+            `The response for '${this.request.url}' returned a status code of '${responseToCache.status}' and won't be cached as a result.`,
+          );
+        }
+
+        return undefined;
       }
     }
 
