@@ -2362,9 +2362,12 @@ define(['exports'], (function (exports) { 'use strict';
       async _getResponse(handler, request, event) {
         await handler.runCallbacks('handlerWillStart', {
           event,
-          request
+          request,
         });
-        let response = undefined;
+
+        let response;
+        let caughtError = null;
+
         try {
           response = await this._handle(request, handler);
           // The "official" Strategy subclasses all throw this error automatically,
@@ -2372,35 +2375,43 @@ define(['exports'], (function (exports) { 'use strict';
           // consistent failure when there's no response or an error response.
           if (!response || response.type === 'error') {
             throw new WorkboxError('no-response', {
-              url: request.url
+              url: request.url,
             });
           }
-        } catch (error) {
-          if (error instanceof Error) {
+        } catch (err) {
+          caughtError = err;
+          if (err instanceof Error) {
             for (const callback of handler.iterateCallbacks('handlerDidError')) {
-              response = await callback({
-                error,
+              const maybeResponse = await callback({
+                error: err,
                 event,
-                request
+                request,
               });
-              if (response) {
+              if (maybeResponse) {
+                response = maybeResponse;
                 break;
               }
             }
           }
           if (!response) {
-            throw error;
-          } else {
-            logger.log(`While responding to '${getFriendlyURL(request.url)}', ` + `an ${error instanceof Error ? error.toString() : ''} error occurred. Using a fallback response provided by ` + `a handlerDidError plugin.`);
+            // No plugin provided a fallback response: rethrow the original error.
+            throw err;
           }
+          logger.log(
+            `While responding to '${getFriendlyURL(request.url)}', ` +
+              `an ${err instanceof Error ? err.toString() : ''} error occurred. Using a fallback response provided by ` +
+              `a handlerDidError plugin.`,
+          );
         }
+
         for (const callback of handler.iterateCallbacks('handlerWillRespond')) {
           response = await callback({
             event,
             request,
-            response
+            response,
           });
         }
+
         return response;
       }
       async _awaitComplete(responseDone, handler, request, event) {
